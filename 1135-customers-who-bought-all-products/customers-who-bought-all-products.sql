@@ -1,8 +1,11 @@
 -- Write your PostgreSQL query statement below
+WITH TotalProducts AS (
+    SELECT COUNT(*) AS total 
+        FROM Product
+)
+
 SELECT customer_id
     FROM Customer
-    GROUP BY customer_id
-    HAVING COUNT(DISTINCT product_key) = (
-         SELECT COUNT(*) as total
-            FROM Product
-    )
+    CROSS JOIN TotalProducts AS T
+    GROUP BY customer_id, T.total
+    HAVING COUNT(DISTINCT product_key) = T.total
